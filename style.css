@@ -490,3 +490,286 @@ main > section:last-child:not(:has(.ca-rows)) { padding-bottom: var(--ca-s2); }
 /* 7주 배포 점검: 2장 출처 줄(GQ Korea) 되살림 — 장 문장 아래 작은 글씨 */
 .ca-src { margin-top: 8px; font-size: 13px; opacity: .7; }
 .ca-src a { text-decoration: underline; text-underline-offset: .2em; }
+
+/* 7주 커스텀: 전체 여백 넓히기 — 화면 가장자리 12→48px · 카드 사이 12→24px (폰 20 · 16) (학생: "마진이 거의 없는거 같은데 마진을 좀 넣어줄래?") */
+:root { --ca-gut: 80px; --ca-gap: 32px; }   /* 2차: 48·24 → 80·32 */
+@media (max-width: 768px) { :root { --ca-gut: 24px; --ca-gap: 16px; } }   /* 2차: 20 → 24 */
+
+/* 7주 커스텀: 첫 화면 사진 자동 전환 — 테이블 1 위로 테이블 4가 서서히 겹쳐 나타났다 사라짐(페이드, 7초 한 바퀴). 처음엔 옆으로 밀기였음. 움직임 0·동작 줄이기에서는 테이블 1만 (학생 요청) */
+.ca-hero--slide { overflow: hidden; }
+.ca-hero--slide .ca-hero-track { position: relative; width: 100%; height: 100%; }
+.ca-hero.ca-hero--full.ca-hero--slide .ca-hero-track img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ca-hero--slide .ca-hero-track img:nth-child(2) { opacity: 0; animation: ca-hero-fade 7s ease-in-out infinite; }
+@keyframes ca-hero-fade { 0%, 35% { opacity: 0; } 50%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.m0 .ca-hero--slide .ca-hero-track img:nth-child(2) { animation: none; opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .ca-hero--slide .ca-hero-track img:nth-child(2) { animation: none; opacity: 0; } }
+
+/* 7주 커스텀: 상세 사진 설명을 사진 오른쪽에 — 설명이 있는 사진만 한 줄에 한 장(사진 바로 옆에 설명), 폰(768 이하)은 아래 그대로 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-d-grid figure:has(figcaption) { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(160px, 1fr); column-gap: var(--ca-gap); align-items: start; }
+  .ca-d-grid figure:has(figcaption) img { justify-self: start; }
+  .ca-d-grid figure:has(figcaption) figcaption { margin-top: 32px; font-size: var(--ca-body); line-height: var(--ca-body-lh); }
+}
+
+/* 7주 커스텀: 카드 사진(1~4장 전체, 처음엔 4장만) — 커서를 올리면 틀 안에서 조금 확대(1.06배). 마우스 있는 기기만, 움직임 0·동작 줄이기에서는 끔 (학생 요청) */
+.ca-sec .ca-fig { overflow: hidden; }
+.ca-sec .ca-fig img { transition: transform .6s var(--ca-e2); }
+@media (hover: hover) and (pointer: fine) {
+}
+.m0 .ca-sec .ca-fig img { transition: none; transform: none !important; }
+@media (prefers-reduced-motion: reduce) { .ca-sec .ca-fig img { transition: none; transform: none !important; } }
+
+/* 7주 커스텀: 천천히 떠오르는 등장 — 장이 화면에 들어올 때 32px 아래에서 1.2초 동안 떠오름, 카드는 차례로 0.12초씩 늦게. 움직임 0·동작 줄이기에서는 없음(기존 규칙) (학생 요청) */
+.m1 .ca-rv, .m2 .ca-rv { --ca-rv-y: 32px; transition: opacity 1s var(--ca-e1), transform 1.2s var(--ca-e2); }
+.ca-grid > .ca-rv:nth-child(2) { transition-delay: .12s; }
+.ca-grid > .ca-rv:nth-child(3) { transition-delay: .24s; }
+.ca-grid > .ca-rv:nth-child(4) { transition-delay: .36s; }
+.ca-grid > .ca-rv:nth-child(5) { transition-delay: .48s; }
+
+/* 7주 커스텀: 위 메뉴에서 지금 보는 장만 진하게, 나머지는 흐리게(sig.js가 붙이는 .is-on 사용). 처음엔 모든 칸 같은 진하기였음 (학생 요청) */
+.ca-menu a { opacity: .35; transition: opacity .4s var(--ca-e1); }
+.ca-menu a.is-on, .ca-menu a[aria-current="true"], .ca-menu a:hover { opacity: 1; }
+.ca-menu:not(:has(a.is-on)) a { opacity: 1; }   /* 첫 화면처럼 아직 어느 장도 아닐 때는 다섯 칸 모두 진하게 */
+
+/* 7주 커스텀: 마우스 커서를 작은 동그라미로 — 평소 테두리 원(16px), 누를 수 있는 곳 위에서는 속이 찬 원. 마우스 기기만 (학생 요청) */
+@media (hover: hover) and (pointer: fine) {
+  html, body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='rgba(255,255,255,.6)' stroke='%23292929' stroke-width='1.5'/%3E%3C/svg%3E") 8 8, auto; }
+  a, button, .ca-fig, .ca-card, [role="button"], label, summary { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='%23292929' stroke='%23FCFCFC' stroke-width='1.5'/%3E%3C/svg%3E") 8 8, pointer; }
+}
+
+/* 7주 커스텀: 4장 물건 상세 — 1번 사진 옆에 2번 사진을 조금 작게, 설명은 맨 오른쪽 위(폭 4 : 3 : 2). 폰(768 이하)은 위아래 그대로. sig.js가 4장 카드를 열 때 .is-obj를 붙임 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-detail.is-obj .ca-d-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(140px, 2fr); column-gap: var(--ca-gap); align-items: start; }
+  .ca-detail.is-obj .ca-d-grid figure, .ca-detail.is-obj .ca-d-grid figure:has(figcaption) { display: contents; }
+  .ca-detail.is-obj .ca-d-grid figure:nth-child(1) img { grid-column: 1; grid-row: 1; }
+  .ca-detail.is-obj .ca-d-grid figure:nth-child(2) img { grid-column: 2; grid-row: 1; }
+  .ca-detail.is-obj .ca-d-grid figcaption { grid-column: 3; grid-row: 1; }
+  .ca-detail.is-obj .ca-d-grid img { width: 100%; max-width: 100%; height: auto; max-height: none; justify-self: start; }
+}
+/* 7주 커스텀(이어서): 4장 상세 글 묶음(번호·이름·작은 글·고른 이유)을 2번 사진 아래, 1번 사진 옆으로 — 상세 안쪽 틀 전체를 같은 4 : 3 : 2 격자로 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-detail.is-obj .ca-d-in { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(140px, 2fr); grid-template-rows: auto 1fr; column-gap: var(--ca-gap); align-items: start; }
+  .ca-detail.is-obj .ca-d-grid { display: contents; }
+  .ca-detail.is-obj .ca-d-grid figure:nth-child(1) img { grid-row: 1 / span 2; }
+  .ca-detail.is-obj .ca-d-txt { grid-column: 2 / span 2; grid-row: 2; margin-top: var(--ca-c1); max-width: none; }
+}
+
+/* 7주 커스텀: 사진 없는 카드(2장 흡수력)의 글을 옆 카드 글과 같은 높이로 — 같은 줄에 사진 있는 카드가 있으면 사진↔글 간격(c1)을 똑같이 둠. 폰(768 이하)은 그대로 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-grid:has(.ca-fig) .ca-card:not(:has(.ca-fig)) .ca-cap { margin-top: var(--ca-c1); }
+}
+
+
+/* 7주 커스텀: 2장 섹션만 배경 #F4F4F4 — 선 안쪽만(좌우 가장자리 여백 안 · 2장 위 선부터 3장 위 선까지). 글·카드 위치는 그대로 (학생 요청) */
+#s3 { background: #F4F4F4; padding-bottom: var(--ca-s3); }   /* 좌우 여백까지 전체 폭 (학생 2차 요청) */
+#s3 + .ca-sec, #s3 ~ #s4 { margin-top: 0; }   /* 2장↔3장 간격(s3)을 2장 안쪽으로 옮김 — 총 간격 그대로 */
+/* 7주 커스텀: 4장 물건도 2장과 똑같이 — 배경 #F4F4F4 전체 폭, 4장 위 선 ~ 기준 위 선(간격 s3를 4장 안쪽으로) (학생 요청) */
+#s5 { background: #F4F4F4; padding-bottom: var(--ca-s3); }
+#s5 ~ #s6 { margin-top: 0; }
+
+/* 7주 커스텀: 장 위아래 여백 균형 — 위(선→장 이름) 44→64px, 아래(내용 끝→다음 선) 160→96px. 노트북 폭만 (학생: "사진 카드와 글 아래 여백이 위보다 좀 더 많은거 같아") */
+@media (min-width: 769px) { :root { --ca-hd1: 64px; --ca-s3: 96px; } }
+
+/* 7주 커스텀: 장 안의 글·카드를 가로선보다 안쪽으로 — 선(--ca-rule-inset = 가장자리 여백)은 그대로, 장 좌우 안쪽 여백만 +32px(폰 +16px) (학생: "글을 좀 더 안쪽으로 넣어줘") */
+:root { --ca-in: 32px; }
+@media (max-width: 768px) { :root { --ca-in: 16px; } }
+.ca-sec { padding-left: calc(var(--ca-gut) + var(--ca-in)); padding-right: calc(var(--ca-gut) + var(--ca-in)); }
+
+/* 7주 커스텀: 첫 화면 제목 타자 효과의 커서(type.js) — 글자색 세로 막대, 다 친 뒤 깜빡이다 사라짐 (학생 요청) */
+.ca-caret { display: inline-block; width: 2px; height: .9em; margin-left: 4px; vertical-align: -0.08em; background: currentColor; }
+.ca-caret.is-done { animation: ca-caret-blink .8s steps(1) 3; }
+@keyframes ca-caret-blink { 50% { opacity: 0; } }
+/* 7주 커스텀: 첫 화면 제목 흰 바탕 판을 늘 켬 — 타자 효과로 처음엔 제목이 비어 있어 sig.js가 판을 끄던 문제, 사진 두 장이 번갈아 나와도 늘 읽히게 (학생: "칠 때 뒤에 흰배경도 같이") */
+.ca-top--hero .ca-h1, .ca-top--hero .ca-h1 > * { color: var(--ca-ink) !important; }
+.ca-top--hero .ca-h1 .ca-h1-in { background: var(--ca-paper); padding: 0 .12em; margin-left: -.12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* 7주 커스텀: 1장·3장 상세 — 사진을 좌우 번갈아(지그재그). 홀수 번째 = 사진 왼쪽·설명 오른쪽(기존), 짝수 번째 = 설명 왼쪽(오른쪽 맞춤)·사진 오른쪽. 폰은 위아래 그대로. sig.js가 .is-zig 표시 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-detail.is-zig .ca-d-grid figure:has(figcaption):nth-child(even) { grid-template-columns: minmax(160px, 1fr) auto; }
+  .ca-detail.is-zig .ca-d-grid figure:has(figcaption):nth-child(even) img { grid-column: 2; grid-row: 1; justify-self: end; }
+  .ca-detail.is-zig .ca-d-grid figure:has(figcaption):nth-child(even) figcaption { grid-column: 1; grid-row: 1; text-align: right; }
+}
+
+/* 7주 커스텀: 상세 안 스크롤 등장 — 사진·설명·글이 32px 아래에서 1.2초 동안 떠오름(설명은 0.15초 늦게). sig.js가 .ca-drv/.is-in을 붙임 (학생 요청) */
+.ca-detail .ca-drv { opacity: 0; transform: translateY(32px); transition: opacity 1s var(--ca-e1), transform 1.2s var(--ca-e2); }
+.ca-detail .ca-drv.is-in { opacity: 1; transform: none; }
+.ca-detail figcaption.ca-drv { transition-delay: .15s; }
+
+/* 7주 커스텀: 온보딩 인트로(intro.js) — 바탕색 화면 가운데에 히어로 문장을 타자 효과로(흰 바탕 판·커서 그대로), 끝나면 서서히 걷힘 (학생 요청) */
+.has-intro body { overflow: hidden; }
+.ca-intro { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 0 var(--ca-gut); background: var(--ca-paper); color: var(--ca-ink); transition: opacity .9s var(--ca-e1); }
+.ca-intro.is-out { opacity: 0; pointer-events: none; }
+.ca-intro-t { margin: 0; width: auto; max-width: 100%; font: var(--ca-w-disp, 600) var(--ca-h1)/var(--ca-h1-lh) var(--ca-f-head); letter-spacing: var(--ca-h1-ls); text-align: left; }
+.ca-intro-in { background: none; padding: 0; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.ca-intro-go { position: absolute; right: var(--ca-gut); bottom: calc(var(--ca-gut) * .6 + 12px); padding: 8px 0; border: 0; background: none; color: inherit; font: var(--ca-w-body) var(--ca-small)/1 var(--ca-f-body); opacity: .6; cursor: pointer; }
+.ca-intro-go:hover { opacity: 1; }
+
+/* 7주 커스텀: 히어로(첫 화면) 모션 빼기 — 사진 등장(떠오르기) 끔. 제목 타자 효과는 index.html에서 type.js를 빼서 끔(인트로에서만 침) (학생 요청) */
+.ca-top--hero .ca-rv, .ca-top--hero .ca-rv.is-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+/* 7주 커스텀: 상단 메뉴(시선·사람·공간·물건·기준)를 화면 가운데에 모음 — 사이트 이름은 왼쪽 그대로, 메뉴만 가운데·간격 40px. 폰(768 이하)은 다섯 칸 같은 폭 그대로 (학생 요청) */
+@media (min-width: 769px) {
+  .ca-gnb-name { grid-column: 1 / span 2; grid-row: 1; }
+  .ca-gnb .ca-menu { grid-column: 1 / -1; grid-row: 1; display: flex; justify-content: flex-end; gap: 40px; }   /* 처음 가운데 → 학생 "우측으로 밀어줘" */
+  .ca-gnb .ca-menu a { grid-column: auto; flex: 0 0 auto; }
+}
+
+
+/* ═══ 7주 커스텀: 스위스 에디토리얼(학생이 보낸 레퍼런스의 배치·글자·색 규칙만) — 첫 화면 반으로 나눔(왼쪽 사진·오른쪽 거대한 굵은 제목) · 사진 위 작은 라벨 · 장 목록(큰 회색 단어) · 장 머리 거대한 숫자 · 검정/흰/옅은 회색만. 이 묶음과 index.html의 .sw-index만 지우면 전으로 ═══ */
+:root { --sw-k: #111111; --sw-g: #E6E6E6; --ca-ink: var(--sw-k); --ca-paper: #FFFFFF; }
+body { background: #FFFFFF; }
+#s3, #s5 { background: none !important; }
+/* 첫 화면: 왼쪽 사진 · 오른쪽 흰 면 아래 거대한 제목 */
+@media (min-width: 769px) {
+  .ca-top--hero .ca-hero--full { right: 50%; width: 50%; }
+  .ca-top--hero .ca-hero-t { left: 50%; padding-left: var(--ca-gap); }
+}
+.ca-top--hero .ca-h1, .ca-top--hero .ca-h1 > * { color: var(--sw-k) !important; }
+.ca-top--hero .ca-h1 { font-size: clamp(32px, 4.5vw, 76px) !important;   /* 처음 clamp(48,7.4vw,124) → 학생 "좀 줄여줘" */ font-weight: 800; line-height: .98; letter-spacing: -.045em; }
+.ca-top--hero .ca-h1 .ca-h1-in { background: none !important; padding: 0; margin: 0; }
+@media (max-width: 768px) { .ca-top--hero .ca-h1, .ca-top--hero .ca-h1 > * { color: #FFFFFF !important; } }
+/* 장 목록: 큰 회색 단어 */
+.sw-index { padding: var(--ca-s2) calc(var(--ca-gut) + var(--ca-in, 0px)) var(--ca-s3); }
+.sw-index > a { position: relative; display: block; color: var(--sw-g); font: 800 clamp(56px, 9.5vw, 144px)/1.02 var(--ca-f-head); letter-spacing: -.05em; text-decoration: none; transition: color .35s var(--ca-e1); }
+.sw-index > a:hover, .sw-index > a:focus-visible { color: var(--sw-k); }
+.sw-index .sw-n { position: absolute; right: 0; top: .9em; font: 500 11px/1 var(--ca-f-body); letter-spacing: .02em; color: var(--sw-g); }
+.sw-index > a:hover .sw-n { color: var(--sw-k); }
+/* 장 머리: 거대한 숫자 + 작은 장 이름 */
+#s2 .ca-head, #s3 .ca-head, #s4 .ca-head, #s5 .ca-head { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(24px, 4vw, 64px); align-items: start; }
+#s2 .ca-head::before, #s3 .ca-head::before, #s4 .ca-head::before, #s5 .ca-head::before { grid-row: 1 / span 3; font: 800 clamp(96px, 11vw, 168px)/.78 var(--ca-f-head); letter-spacing: -.06em; color: var(--sw-k); }
+#s2 .ca-head::before { content: "1"; } #s3 .ca-head::before { content: "2"; } #s4 .ca-head::before { content: "3"; } #s5 .ca-head::before { content: "4"; }
+.ca-sec .ca-label { font-weight: 700; font-size: 13px; letter-spacing: 0; }
+.ca-sec .ca-lead { font-weight: 500; letter-spacing: -.01em; }
+@media (min-width: 769px) { .ca-gnb .ca-menu a, .ca-gnb .ca-menu a span { color: var(--sw-k) !important; } }   /* 메뉴는 오른쪽 흰 면 위라 늘 검정 */
+#s3 .ca-head { display: block; }   /* 2장은 머리 칸이 좁아 숫자를 글 위 한 줄로 */
+#s3 .ca-head::before { display: block; margin-bottom: 24px; }
+/* ═══ 스위스 에디토리얼 끝 ═══ */
+
+/* ═══ 7주 커스텀: 장 목록 아코디언(accordion.js) — 큰 단어가 장 머리, 누르면 바로 아래 펼침. 단어 사이 가는 선, 열린 단어는 검정. 펼친 장 안의 큰 숫자·작은 장 이름은 숨김(단어가 대신) (학생 요청) ═══ */
+.has-acc .sw-index { padding-bottom: var(--ca-s2); }
+.has-acc .sw-index > a { border-top: 1px solid var(--sw-g); padding-top: 8px; cursor: pointer; }
+.has-acc .sw-index > a.is-open, .has-acc .sw-index > a.is-open .sw-n { color: var(--sw-k); }
+.sw-acc { max-height: 0; overflow: hidden; transition: max-height .6s var(--ca-e2); }
+.sw-acc.is-open { max-height: var(--acc-h, 4000px); }
+.sw-acc > .ca-sec { margin-top: 0 !important; padding: 8px 0 var(--ca-s2) !important; background: none !important; }
+.sw-acc > .ca-sec::before { display: none !important; }
+.sw-acc > .ca-sec .ca-head::before { display: none !important; }
+.sw-acc > .ca-sec .ca-head { display: block !important; padding-top: 0 !important; }
+.sw-acc > .ca-sec .ca-label { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* 화면에선 숨기되 읽기 프로그램엔 남김 */
+/* ═══ 아코디언 끝 ═══ */
+.sw-acc > #s3 .ca-src { font-size: 11px; margin-top: 12px; }   /* 7주 커스텀: 2장 펼쳤을 때 출처 글씨 13→11px (학생 요청) */
+.sw-acc > #s3 .ca-src a { font-size: inherit; font-weight: inherit; letter-spacing: 0; color: inherit; }   /* 출처 링크도 출처 줄과 같은 크기 */
+/* 7주 커스텀: 첫 화면 아래 사진 판 — 화면 폭 가득, 높이 화면의 80%, 글 없음 (학생 요청 · 사진 길 5) */
+.sw-panel { margin: 0; height: 80vh; height: 80svh; overflow: hidden; }
+.sw-panel img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 768px) { .sw-panel { height: 60svh; } }
+
+/* 7주 커스텀: 1장(시선) 상세의 사진 옆 설명 글 15→20px (학생 요청) */
+@media (min-width: 769px) { .ca-detail[data-sec="s2"] .ca-d-grid figcaption, .ca-detail[data-sec="s4"] .ca-d-grid figcaption { font-size: 20px; line-height: 1.5; } }   /* 1장 시선 + 3장 공간 */
+@media (max-width: 768px) { .ca-detail[data-sec="s2"] .ca-d-grid figcaption, .ca-detail[data-sec="s4"] .ca-d-grid figcaption { font-size: 16px; } }
+
+/* 7주 커스텀: 1장·3장 상세 사진 설명 = 부제목(굵게) + 상세 설명 2~3줄(15px, 조금 연하게) (학생 요청) */
+.ca-d-grid figcaption .ca-cap-t { display: block; font-weight: 700; }
+.ca-d-grid figcaption .ca-cap-d { display: block; margin-top: 12px; font-size: 15px; line-height: 1.75; font-weight: 400; opacity: .78; max-width: 46em; }
+.ca-detail.is-zig .ca-d-grid figure:nth-child(even) figcaption .ca-cap-d { margin-left: auto; }   /* 오른쪽 맞춤 칸에서도 문단이 사진 쪽에 붙게 */
+/* 7주 커스텀: 첫 화면 아래 빅타이포 — 기준 문장을 화면 가득 아주 굵게(처음엔 사진 판). 줄바꿈은 index.html에서 (학생 요청) */
+.sw-big { padding: clamp(72px, 12vw, 168px) calc(var(--ca-gut) + var(--ca-in, 0px)); background: #FFFFFF; }
+.sw-big-t { margin: 0; color: #CFCFCF; font: 800 clamp(24px, 7vw, 114px)/.98 var(--ca-f-head); letter-spacing: -.055em; word-break: keep-all; }
+.sw-big-t span { display: block; white-space: nowrap; color: #CFCFCF; transition: color .4s var(--ca-e1); }
+.sw-big-t span:hover { color: var(--sw-k, #111111); }   /* 올린 줄만 진해짐 (학생 요청) */
+@media (hover: none) { .sw-big-t span { color: #9A9A9A; } }   /* 마우스 없는 기기는 호버가 없어 조금 진한 회색 */
+@media (prefers-reduced-motion: reduce) { .sw-big-t span { transition: none; } }
+.sw-big-t span { width: fit-content; max-width: 100%; }   /* 줄 칸을 글자 폭만큼 — 호버도 글자 위에서만 */
+/* 7주 커스텀: 카드(1·2·4장) 사진 아래 글(이름·작은 글·More)을 사진 왼쪽 끝에서 4px 안쪽으로(처음 12px·폰 10px) — 사진과 딱 붙어 보이던 것 완화 (학생 요청) */
+#s2 .ca-card .ca-cap, #s3 .ca-card .ca-cap, #s5 .ca-card .ca-cap { padding-left: 4px; }
+@media (max-width: 768px) { #s2 .ca-card .ca-cap, #s3 .ca-card .ca-cap, #s5 .ca-card .ca-cap { padding-left: 4px; } }
+/* 7주 커스텀: More → 도 글과 같이 사진 왼쪽 끝에서 4px 안쪽으로 (.ca-more는 .ca-cap 밖 .ca-txt 안에 있음) (학생 요청) */
+#s2 .ca-card .ca-more, #s3 .ca-card .ca-more, #s5 .ca-card .ca-more { margin-left: 4px; }
+
+/* 7주 커스텀: 카드 hover — 사진만이 아니라 카드 한 장(사진+글+More)이 통째로 1.04배 커짐. 사진 안쪽 확대는 뺌. 마우스 기기만, 움직임 0·동작 줄이기 제외 (학생 요청) */
+.ca-sec .ca-card.ca-card { transition: left var(--ca-t-slide) var(--ca-e2), width var(--ca-t-slide) var(--ca-e2), opacity 1s var(--ca-e1), transform 1.2s var(--ca-e2), scale .45s var(--ca-e2); }
+@media (hover: hover) and (pointer: fine) { .ca-sec .ca-card.ca-card:hover { scale: 1.04; z-index: 2; } }
+.m0 .ca-sec .ca-card { scale: none !important; }
+@media (prefers-reduced-motion: reduce) { .ca-sec .ca-card { scale: none !important; } }
+
+/* 7주 커스텀: 큰 단어(아코디언 머리) 왼쪽 대표 사진 — 정사각 작은 썸네일, 평소 흑백·흐리게, 올리거나 펼치면 원래 색 (학생 요청) */
+.sw-index > a { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 36px); }
+.sw-thumb { flex: 0 0 auto; width: clamp(40px, 6.4vw, 92px); height: clamp(40px, 6.4vw, 92px); object-fit: cover; filter: grayscale(1); opacity: .55; transition: filter .4s var(--ca-e1), opacity .4s var(--ca-e1); }
+.sw-index > a:hover .sw-thumb, .sw-index > a:focus-visible .sw-thumb, .sw-index > a.is-open .sw-thumb { filter: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .sw-thumb { transition: none; } }
+/* 7주 커스텀: 대표 사진을 단어 오른쪽 끝으로(처음엔 왼쪽). 번호 (01)은 사진 왼쪽 옆으로 비킴 (학생 요청) */
+.sw-index > a .sw-thumb { order: 2; margin-left: auto; }
+.sw-index > a .sw-n { right: calc(clamp(40px, 6.4vw, 92px) + clamp(14px, 2.4vw, 36px)); }
+
+/* 7주 커스텀: 빅타이포를 한 줄로 — 칸 폭에 맞춰 글자 크기가 자동(4.4cqw). 구절 사이 .3em. 폰(768 이하)은 한 줄이면 너무 작아 자연스럽게 줄바꿈 (학생 요청) */
+.sw-big { container-type: inline-size; }
+.sw-big-t { font-size: 4.5cqw; white-space: nowrap; }
+.sw-big-t span { display: inline; width: auto; max-width: none; margin-right: .3em; }
+.sw-big-t span:last-child { margin-right: 0; }
+@media (max-width: 768px) {
+  .sw-big-t { font-size: clamp(24px, 7vw, 114px); white-space: normal; }
+  .sw-big-t span { display: inline-block; white-space: nowrap; }
+}
+.sw-big { padding-top: clamp(56px, 7vw, 112px); padding-bottom: clamp(56px, 7vw, 112px); }   /* 한 줄이라 위아래 여백도 줄임 */
+
+
+/* ═══ 7주 커스텀: 미니멀 모노톤으로 갈아엎기(학생 요청) — 가는 글자·작은 크기·흑백 사진(올리면 컬러)·연한 회색 선. 이 묶음만 지우면 스위스 에디토리얼로 돌아감(저장본: _저장_스위스에디토리얼_2026-10-19/) ═══ */
+:root { --sw-k: #222222; --sw-g: #EDEDED; --mn-gray: #BDBDBD; }
+/* 첫 화면 제목: 가는 글자 */
+.ca-top--hero .ca-h1 { font-size: clamp(20px, 2.6vw, 36px) !important; font-weight: 300 !important; letter-spacing: -.02em !important; line-height: 1.35 !important; }
+/* 인트로 문장 */
+.ca-intro-t { font-weight: 300; font-size: clamp(22px, 3vw, 40px); letter-spacing: -.02em; }
+/* 기준 문장 한 줄: 가늘고 작게 */
+.sw-big { padding-top: clamp(80px, 10vw, 160px); padding-bottom: clamp(48px, 6vw, 96px); }
+.sw-big-t { font-weight: 300; font-size: 2.7cqw; line-height: 1.5; letter-spacing: -.02em; }
+.sw-big-t span, .sw-big-t { color: var(--mn-gray); }
+@media (max-width: 768px) { .sw-big-t { font-size: clamp(17px, 4.6vw, 26px); } }
+/* 장 목록 큰 단어 → 가늘고 작은 단어, 얇은 선 */
+.sw-index { --th: clamp(32px, 3.6vw, 52px); padding-top: 0; }
+.sw-index > a { font-weight: 300; font-size: clamp(24px, 3.4vw, 48px); line-height: 1.4; letter-spacing: -.02em; padding: 22px 0 !important; color: var(--mn-gray); }
+.has-acc .sw-index > a { border-top: 1px solid var(--sw-g); }
+.sw-thumb { width: var(--th); height: var(--th); }
+.sw-index > a .sw-n { right: calc(var(--th) + clamp(12px, 1.6vw, 24px)); top: 50%; transform: translateY(-50%); color: var(--mn-gray); }
+/* 사진: 흑백, 올리면 컬러(마우스 없는 기기는 흑백 고정) */
+.ca-hero img, .ca-fig img, .ca-d-grid img, .ca-cell img { filter: grayscale(1); transition: filter .5s var(--ca-e1), transform .6s var(--ca-e2); }
+.ca-hero:hover img, .ca-card:hover .ca-fig img, .ca-fig:hover img, .ca-d-grid img:hover, .ca-cell:hover img, .ca-cell.is-hot img { filter: none; }
+/* 선은 연하게 */
+.ca-sec:not(:first-child)::before { background: var(--sw-g); }
+.ca-gnb, .ca-bar-b { box-shadow: none; }
+/* ═══ 미니멀 모노톤 끝 ═══ */
+
+/* ═══ 7주 커스텀: 위 메뉴 칸이 '정보원의 취향' 위를 덮어 눌리지 않던 것 고침 — 메뉴 칸은 클릭을 통과시키고 글자 링크만 받음 (학생 요청) ═══ */
+.ca-gnb .ca-menu { pointer-events: none; }
+.ca-gnb .ca-menu a { pointer-events: auto; }
+.ca-gnb-name { position: relative; z-index: 1; }
+.ca-gnb-name a { cursor: pointer; }
+
+/* ═══ 7주 커스텀: 배경 한 단계 낮춤(A안) — 바탕 #F2F2F2(my-style.css --my-bg) · 옅은 회색 글자 #A8A8A8 · 선 #DCDCDC. 이 블록을 지우고 --my-bg를 #FCFCFC로 되돌리면 이전 배경 (학생 요청) ═══ */
+:root { --mn-gray: #A8A8A8; --sw-g: #DCDCDC; }
+body, .sw-big { background: var(--ca-paper); }
+/* ═══ 배경 낮춤 끝 ═══ */
+
+/* ═══ 7주 커스텀: 사진 스포트라이트 — 올린 사진만 컬러로 환하게 빛나고(밝기·대비↑ + 흰 빛 번짐), 같은 줄의 다른 사진은 어둡게 물러남. 이 블록을 지우면 이전 hover(컬러만)로 (학생 요청) ═══ */
+.ca-fig img, .ca-d-grid img, .ca-cell img { transition: filter .5s var(--ca-e1), opacity .5s var(--ca-e1), box-shadow .5s var(--ca-e1), transform .6s var(--ca-e2); position: relative; }
+.ca-fig:hover img, .ca-card:hover .ca-fig img, .ca-d-grid img:hover, .ca-cell:hover img, .ca-cell.is-hot img {
+  filter: none;
+  z-index: 3;
+}
+.ca-track:has(.ca-card:hover) .ca-card:not(:hover) .ca-fig img,
+.ca-grid:has(.ca-card:hover) .ca-card:not(:hover) .ca-fig img,
+.ca-d-grid:has(img:hover) img:not(:hover),
+.ca-track[data-scatter]:has(.ca-cell:hover) .ca-cell:not(:hover) img { opacity: .85; filter: grayscale(1) brightness(.5); }
+.ca-sec .ca-fig { overflow: visible; }
+/* 배경도 같이 어두워짐(A안 #D6D6D6) — 사진에 올린 동안만, 벗어나면 서서히 원래 배경으로 (학생 요청) */html, body, .sw-big, .ca-detail, .ca-gnb, .ca-bar-b { transition: background-color .5s var(--ca-e1); }html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover), html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) body, html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .sw-big, html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-detail { background: #D6D6D6; }html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-gnb:not(.on-hero), html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-bar-b { background: color-mix(in srgb, #D6D6D6 88%, transparent); }
+/* ═══ 스포트라이트 끝 ═══ */
+
+/* ═══ 7주 커스텀: 마우스 따라다니는 빛 점 — 사진 위에서만, 사진 크기만큼 덮은 얇은 빛 층(accordion.js의 .ca-spot). 이 블록을 지우면 빛 점 없음 (학생 요청) ═══ */
+.ca-spot { display: none; position: fixed; z-index: 55; pointer-events: none; opacity: 0; transition: opacity .35s var(--ca-e1);
+  background: radial-gradient(circle 170px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,.5) 0%, rgba(255,255,255,.2) 45%, rgba(255,255,255,0) 100%); mix-blend-mode: screen; }
+.ca-spot.is-on { opacity: 1; }
+.ca-lock .ca-spot { z-index: 95; }
+/* ═══ 빛 점 끝 ═══ */
+
+/* ═══ 7주 커스텀: 카드 호버(1.04배)가 아코디언 칸 가장자리에서 잘리던 것 수습 — 칸 좌우에 24px 숨 쉴 자리를 주고 같은 만큼 바깥으로 당겨 글·사진 위치는 그대로 (학생 요청) ═══ */
+.sw-acc { padding-left: 24px; padding-right: 24px; margin-left: -24px; margin-right: -24px; }
+/* ═══ 카드 호버 잘림 수습 끝 ═══ */

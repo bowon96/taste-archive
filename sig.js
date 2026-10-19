@@ -362,6 +362,10 @@
   function txt(c, s) { var e = $(s, c); return e ? e.textContent.trim() : ''; }
   function fill(i) {
     var N = dCards.length; dAt = (i + N) % N; var c = dCards[dAt];
+    dl.classList.toggle('is-obj', !!c.closest('#s5'));   /* 7주 커스텀: 4장 물건 상세만 사진 두 장을 나란히 */
+    var zSec = c.closest('section'); dl.setAttribute('data-sec', zSec ? zSec.id : ''); dl.setAttribute('data-name', ($('.ca-name', c) ? $('.ca-name', c).textContent.trim() : ''));   /* 7주 커스텀: 지금 연 카드의 장(s2~s6) — 장별 상세 꾸미기용 */
+    dl.classList.toggle('is-zig', !!zSec && (zSec.id === 's2' || zSec.id === 's4'));   /* 7주 커스텀: 1장·3장 상세는 사진을 좌우 번갈아 */
+    var cSec = c.closest('section'); if (cSec && links) links.forEach(function (a) { var on = a.getAttribute('href') === '#' + cSec.id; a.classList.toggle('is-on', on); a.setAttribute('aria-current', on ? 'true' : 'false'); });   /* 7주 커스텀: 상세가 열려 있는 동안 위 메뉴는 그 카드의 장만 진하게 */
     $('.ca-d-n', dl).textContent = '[' + pad(dAt + 1) + ']';
     $('.ca-d-t', dl).textContent = txt(c, '.ca-name');
     var dw = $('.ca-d-when', dl); dw.textContent = txt(c, '.ca-when'); dw.hidden = !dw.textContent;
@@ -380,7 +384,7 @@
       var w = +im.getAttribute('width') || im.naturalWidth || 1, h = +im.getAttribute('height') || im.naturalHeight || 1; ni.width = w; ni.height = h;
       if (k === 0) { nf.classList.add('is-first'); if (w >= h) nf.classList.add('is-wide'); }
       nf.appendChild(ni);
-      var fc = $('figcaption', f); if (fc && fc.textContent.trim()) { var nc = D.createElement('figcaption'); nc.textContent = fc.textContent.trim(); nf.appendChild(nc); }
+      var fc = $('figcaption', f); if (fc && fc.textContent.trim()) { var nc = D.createElement('figcaption'); if (fc.querySelector('.ca-cap-t')) nc.innerHTML = fc.innerHTML.trim(); else nc.textContent = fc.textContent.trim(); nf.appendChild(nc);   /* 7주 커스텀: 부제목·상세 설명 칸은 그대로 옮김 */ }
       grid.appendChild(nf);
     });
     grid.hidden = !grid.children.length;
@@ -389,6 +393,16 @@
     $('b', pv).textContent = pn; $('b', nx).textContent = nn;
     pv.setAttribute('aria-label', '이전 항목: ' + pn); nx.setAttribute('aria-label', '다음 항목: ' + nn);
     dl.scrollTop = 0;
+    /* 7주 커스텀: 상세 안에서 스크롤하면 사진·설명·글이 아래에서 떠오름 (움직임 0·동작 줄이기 제외) */
+    if (MOTION !== '0' && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      dl._rvItems = $$('.ca-d-grid img, .ca-d-grid figcaption, .ca-d-txt', dl);
+      dl._rvItems.forEach(function (el) { el.classList.remove('is-in'); el.classList.add('ca-drv'); });
+      if (!dl._rv) {
+        dl._rv = function () { var lim = innerHeight * 0.94; (dl._rvItems || []).forEach(function (el) { if (!el.classList.contains('is-in') && el.getBoundingClientRect().top < lim) el.classList.add('is-in'); }); };
+        dl.addEventListener('scroll', dl._rv, { passive: true }); addEventListener('resize', dl._rv);
+      }
+      setTimeout(dl._rv, 60);   /* 열자마자 보이는 것부터 */
+    }
   }
   function openDetail(cards, i, done) {
     dCards = cards; dDone = done || null; back = D.activeElement; fill(i); detailOn = true; tracks.forEach(function (t) { t.arm(); });
@@ -398,7 +412,7 @@
   }
   function closeDetail() {
     if (!detailOn) return;
-    dl.classList.remove('is-on'); R.classList.remove('ca-lock'); detailOn = false;
+    dl.classList.remove('is-on'); R.classList.remove('ca-lock'); detailOn = false; current();   /* 7주 커스텀: 상세를 닫으면 메뉴를 다시 스크롤 위치대로 */
     if (dDone) dDone(dAt);
     var t = $('.ca-open', dCards[dAt]) || back; if (t && t.focus) t.focus({ preventScroll: true });
     if (stacked()) dCards[dAt].scrollIntoView({ block: 'nearest' });
@@ -431,6 +445,7 @@
   links.forEach(function (a, i) { if (!secs[i]) REPORT.push('메뉴 연결 없음: ' + a.textContent.trim()); a.innerHTML = '<span>' + a.innerHTML + '</span>'; });
   links.forEach(function (a) { a.addEventListener('click', function () { if (detailOn) closeDetail(); }); });   /* 장 메뉴 = 상세 닫고 그 장으로 */
   function current() {
+    if (detailOn) return;   /* 7주 커스텀: 상세가 열려 있으면 그 카드의 장 표시를 유지 */
     var y = innerHeight * .4, on = -1;
     secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= y) on = i; });
     if (innerHeight + scrollY >= D.documentElement.scrollHeight - 4) { for (var k = secs.length - 1; k >= 0; k--) if (secs[k]) { on = k; break; } }   /* 맨 끝 = 마지막 장 */
