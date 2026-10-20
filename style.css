@@ -760,7 +760,7 @@ body, .sw-big { background: var(--ca-paper); }
 .ca-d-grid:has(img:hover) img:not(:hover),
 .ca-track[data-scatter]:has(.ca-cell:hover) .ca-cell:not(:hover) img { opacity: .85; filter: grayscale(1) brightness(.5); }
 .ca-sec .ca-fig { overflow: visible; }
-/* 배경도 같이 어두워짐(A안 #D6D6D6) — 사진에 올린 동안만, 벗어나면 서서히 원래 배경으로 (학생 요청) */html, body, .sw-big, .ca-detail, .ca-gnb, .ca-bar-b { transition: background-color .5s var(--ca-e1); }html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover), html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) body, html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .sw-big, html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-detail { background: #D6D6D6; }html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-gnb:not(.on-hero), html:has(.ca-fig:hover, .ca-d-grid img:hover, .ca-cell:hover) .ca-bar-b { background: color-mix(in srgb, #D6D6D6 88%, transparent); }
+/* (사진 호버 시 배경 어두워짐은 학생 요청으로 뺌) */
 /* ═══ 스포트라이트 끝 ═══ */
 
 /* ═══ 7주 커스텀: 마우스 따라다니는 빛 점 — 사진 위에서만, 사진 크기만큼 덮은 얇은 빛 층(accordion.js의 .ca-spot). 이 블록을 지우면 빛 점 없음 (학생 요청) ═══ */
