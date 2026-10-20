@@ -773,3 +773,10 @@ body, .sw-big { background: var(--ca-paper); }
 /* ═══ 7주 커스텀: 카드 호버(1.04배)가 아코디언 칸 가장자리에서 잘리던 것 수습 — 칸 좌우에 24px 숨 쉴 자리를 주고 같은 만큼 바깥으로 당겨 글·사진 위치는 그대로 (학생 요청) ═══ */
 .sw-acc { padding-left: 24px; padding-right: 24px; margin-left: -24px; margin-right: -24px; }
 /* ═══ 카드 호버 잘림 수습 끝 ═══ */
+
+/* 사진에 색을 다시 넣음 — 흑백(grayscale) 처리를 풀어 원본 컬러로, 호버로 뒤로 물러나는 사진은 흑백 대신 어둡고 옅은 컬러 (학생 요청) */
+.ca-hero img, .ca-fig img, .ca-d-grid img, .ca-cell img, .ca-detail img, .sw-thumb, .i-mono img, .i-tint img { filter: none; }
+.ca-track:has(.ca-card:hover) .ca-card:not(:hover) .ca-fig img,
+.ca-grid:has(.ca-card:hover) .ca-card:not(:hover) .ca-fig img,
+.ca-d-grid:has(img:hover) img:not(:hover),
+.ca-track[data-scatter]:has(.ca-cell:hover) .ca-cell:not(:hover) img { opacity: .85; filter: brightness(.55) saturate(.7); }
